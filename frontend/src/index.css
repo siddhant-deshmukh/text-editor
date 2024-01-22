@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#toolbar ul {
+  display: flex;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+#toolbar > ul:not(:last-child) {
+  border-right: 1px solid rgb(240, 236, 236) ;
+}
+
+#toolbar > ul > button {
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  margin: 1px;
+}
+#toolbar > ul > button:hover {
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+#toolbar > ul > button.selected {
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+  outline: gray solid 1px;
+}
