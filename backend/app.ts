@@ -8,6 +8,7 @@ import express, { Express } from 'express';
 
 import docRouter from './routes/docRoutes'
 import indexRouter from './routes/indexRoutes'
+import { CheckIfEditAllowed, CheckJWTCookie, UpdateDoc } from './utils';
 // import orderRouter from './routes/orderRoutes'
 
 dotenv.config();
@@ -17,15 +18,59 @@ const server = createServer(app);
 export const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", `${process.env.CLIENT_URL}`],
-    methods: ["PUT", "GET"],
-  }
+    methods: ["POST", "GET"],
+    credentials: true,
+  },
+
 });
 
 const port = process.env.PORT || 5000;
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  const cookie = socket.handshake.headers.cookie
+  const user_id = CheckJWTCookie(cookie)
+
+  socket.on("disconnect", (reason) => {
+    console.log("Disconnected", reason)
+  })
+  socket.on("edit-doc", async (docId: string, updatedDoc: string) => {
+    let allowed = false
+    if (socket.rooms.has(docId)) {
+      allowed = true
+    } else {
+      if (user_id) {
+        const isAutherizedToEdit = await CheckIfEditAllowed(docId, user_id)
+        if (isAutherizedToEdit) {
+          socket.join(docId)
+          allowed = true
+        }
+      }
+    }
+    if (allowed && user_id) {
+      const updateChanges = await UpdateDoc(docId, updatedDoc, user_id)
+      // console.log(updateChanges)
+      io.to(docId).emit("updated-doc", {
+        docId,
+        updatedDoc,
+        updatedBy: user_id
+      })
+    }
+  })
+  // socket.on("", () => {
+
+  // })
+  // socket.join()
 });
+
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  //@ts-ignore
+  socket.username = username;
+  next();
+})
 
 // parsing cokkie values
 app.use(cookieParser())

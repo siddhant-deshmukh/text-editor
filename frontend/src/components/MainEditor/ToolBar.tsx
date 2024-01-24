@@ -81,7 +81,7 @@ export default function Toolbar() {
   }, [updateToolbar, editor]);
 
   return <div className="flex flex-col items-center">
-    <div id="toolbar" className="fixed top-2 border mx-auto my-2 flex justify-center text-[#3A3A38] bg-white rounded-lg p-1 shadow-lg">
+    <div id="toolbar" className="fixed top-16 border mx-auto my-2 flex justify-center text-[#3A3A38] bg-white rounded-lg p-1 shadow-lg">
       {/* Undo, Redo */}
       <ul>
         <button

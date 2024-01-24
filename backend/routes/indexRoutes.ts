@@ -50,7 +50,9 @@ router.post('/register',
 
       // Set-Cookie header
       // add an access_token cookie in the frontend will get validated to autherize some url
-      res.cookie("access_token", token)
+      res.cookie("access_token", token, {
+        // httpOnly: false,
+      })
 
       return res.status(201).json({ token, user: newUser })
 
@@ -73,14 +75,16 @@ router.post('/login',
       if (!checkUser) return res.status(404).json({ msg: 'User doesn`t exists!' });
 
       // if user use another method to login like google/github insted of password
-      
+
       if (!(await bcrypt.compare(password, checkUser.password))) return res.status(406).json({ msg: 'Wrong password!' });
 
       const token = jwt.sign({ _id: checkUser._id.toString(), email }, process.env.TOKEN_KEY || 'zhingalala', { expiresIn: '2h' })
 
       // Set-Cookie header
       // add an access_token cookie in the frontend will get validated to autherize some url
-      res.cookie("access_token", token)
+      res.cookie("access_token", token, {
+        // httpOnly: false,
+      })
 
       return res.status(200).json({ token, user: checkUser })
     } catch (err) {

@@ -25,7 +25,9 @@ export default function Home() {
 
   return (
     <main className="">
+      {/* Form Modal to create new document */}
       <NewDocModal modelToggle={modelToggle} setToggle={setToggle} />
+      {/* Option to create a new modal */}
       <div className="bg-[#F3F3F3] w-full py-7 mb-5 ">
         <div className="max-w-7xl mx-auto px-4">
           <div>
@@ -43,7 +45,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-
+      {/* List of user documents */}
       <div className="relative overflow-x-auto max-w-7xl mx-auto px-4">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-900 uppercase bg-blue-50 dark:bg-gray-700 dark:text-gray-400">
