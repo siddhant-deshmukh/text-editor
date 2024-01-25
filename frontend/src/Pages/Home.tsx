@@ -74,7 +74,7 @@ export default function Home() {
                     </th>
                     <td className="">
                       <Link className="block w-full px-6 py-4" to={`/d/${doc._id}`}>
-                        {doc.author ? doc.author : "You"}
+                        {doc.owner ? doc.owner : "You"}
                       </Link>
                     </td>
                     <td className="">

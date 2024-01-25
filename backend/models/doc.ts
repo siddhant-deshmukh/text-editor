@@ -7,6 +7,8 @@ export interface IDocCreate {
   title: string
   author_id: Types.ObjectId
   write_access: Types.ObjectId[]
+  read_access: Types.ObjectId[]
+  is_public: boolean
   content: string
   last_updated: number
 }
@@ -19,6 +21,8 @@ const DocSchema = new mongoose.Schema<IDoc>({
   author_id: { type: mongoose.Schema.ObjectId, ref: "User", index: 1 },
   last_updated: { type: Number },
   write_access: [{ type: mongoose.Schema.ObjectId, ref: "User", index: 1 }],
+  read_access: [{ type: mongoose.Schema.ObjectId, ref: "User", index: 1 }],
+  is_public: { type: Boolean },
   content: { type: String, default: "" }
 })
 

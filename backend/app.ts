@@ -33,29 +33,68 @@ io.on('connection', (socket) => {
   socket.on("disconnect", (reason) => {
     console.log("Disconnected", reason)
   })
-  socket.on("edit-doc", async (docId: string, updatedDoc: string) => {
-    let allowed = false
-    if (socket.rooms.has(docId)) {
-      allowed = true
-    } else {
-      if (user_id) {
-        const isAutherizedToEdit = await CheckIfEditAllowed(docId, user_id)
-        if (isAutherizedToEdit) {
-          socket.join(docId)
-          allowed = true
-        }
+  // socket.on("join-doc-room", async (docId: string) => {
+  //   let allowed = false
+  //   if (!socket.rooms.has(docId) && user_id) {
+  //     const isAutherizedToEdit = await CheckIfEditAllowed(docId, user_id)
+  //     if (isAutherizedToEdit) {
+  //       socket.join(docId)
+  //       allowed = true
+  //     }
+  //   }
+  // })
+  socket.on("join-r", async (docId) => {
+    console.log("Here", docId, user_id)
+    if (!socket.rooms.has(docId) && user_id) {
+      const isAutherizedToEdit = await CheckIfEditAllowed(docId, user_id)
+      if (isAutherizedToEdit) {
+        console.log("joined")
+        socket.join(docId)
+        socket.to(socket.id).emit("room-status", {
+          docId,
+          msg: "Joined",
+        })
+      } else {
+        socket.to(socket.id).emit("room-status", {
+          docId,
+          msg: "Not Autherized",
+        })
       }
-    }
-    if (allowed && user_id) {
-      const updateChanges = await UpdateDoc(docId, updatedDoc, user_id)
-      // console.log(updateChanges)
-      io.to(docId).emit("updated-doc", {
+    } else if (socket.rooms.has(docId)) {
+      socket.to(socket.id).emit("room-status", {
         docId,
-        updatedDoc,
-        updatedBy: user_id
+        msg: "Already joined",
+      })
+    } else {
+      socket.to(socket.id).emit("room-status", {
+        docId,
+        msg: "Not Joined",
       })
     }
   })
+  // socket.on("edit-doc", async (docId: string, updatedDoc: string) => {
+  //   let allowed = false
+  //   if (socket.rooms.has(docId)) {
+  //     allowed = true
+  //   } else {
+  //     if (user_id) {
+  //       const isAutherizedToEdit = await CheckIfEditAllowed(docId, user_id)
+  //       if (isAutherizedToEdit) {
+  //         socket.join(docId)
+  //         allowed = true
+  //       }
+  //     }
+  //   }
+  //   if (allowed && user_id) {
+  //     const updateChanges = await UpdateDoc(docId, updatedDoc, user_id)
+  //     // console.log(updateChanges)
+  //     io.to(docId).emit("updated-doc", {
+  //       docId,
+  //       updatedDoc,
+  //       updatedBy: user_id
+  //     })
+  //   }
+  // })
   // socket.on("", () => {
 
   // })

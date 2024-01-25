@@ -16,7 +16,8 @@ interface IDocSnippet {
   title: string
   last_updated: number
   access_to?: 'read' | 'write'
-  author: string
+  owner: string
+  author_id: string
 }
 
 interface IMsg {
@@ -24,4 +25,10 @@ interface IMsg {
   msg: string 
   id: number
   time? : number
+}
+
+interface IPermissions {
+  write_access: string[]
+  read_access: string[]
+  is_public: boolean
 }
